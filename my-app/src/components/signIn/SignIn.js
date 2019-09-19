@@ -23,7 +23,6 @@ class SignIn extends React.Component {
     //方式submit post返回
     e.preventDefault();
     var res = await Auth.login(this.state.email, this.state.password);
-    console.log(res);
     if (res.result) {
       scope.setState({ isLogin: res.result });
     }
@@ -47,7 +46,9 @@ class SignIn extends React.Component {
         <div className='container'>
           <div className='row'>
             <div className='col p-0'>
-              <Header />
+              <Router>
+                <Header />
+              </Router>
             </div>
           </div>
           <div className='row'>

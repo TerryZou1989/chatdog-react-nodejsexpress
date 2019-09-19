@@ -44,54 +44,21 @@ class HttpRequest {
                 body: pbody
             });
 
-        // var res = await fetch(req);
-
-        // var result = await res.json();
-
-        // console.log(result);
-        // .then(async res => {
-        //     //网络请求成功,执行该回调函数,得到响应对象,通过response可以获取请求的数据
-        //     //将Promise对象转换成json对象后return，给下一步的.then处理
-        //     // console.log(res);
-        //     // return res.json();
-        //     //或 return response.text()
-        //     if (res.ok) {
-        //         await res.json().then(data => {
-        //             console.log('http post');
-        //             console.log(data);
-        //             result = data;
-        //             // resolve(data);
-        //         });
-        //     } else {
-        //         console.log("请求不成功，状态码为", res.status);
-        //     }
-        // })
-        // .catch(ex => {
-        //     console.log(ex)
-        //     //网络请求失败,执行该回到函数,得到错误信息
-        //     result = { result: false, message: ex.message };
-
-        // });
-
         await fetch(req)
-        .then(res => {
-            //网络请求成功,执行该回调函数,得到响应对象,通过response可以获取请求的数据
-            //将Promise对象转换成json对象后return，给下一步的.then处理
-            //console.log(res.json());
-            return res.json();
-            //或 return response.text()
-        })
-        .then(data => {
-            console.log('http post');
-            console.log(data);
-            result = data;
-            //处理请求得到的数据
-        })
-        .catch(ex => {
-            console.log(ex)
-            //网络请求失败,执行该回到函数,得到错误信息
-            result={result:false,message:ex.message};
-        });
+            .then(res => {
+                //网络请求成功,执行该回调函数,得到响应对象,通过response可以获取请求的数据
+                //将Promise对象转换成json对象后return，给下一步的.then处理
+                return res.json();
+                //或 return response.text()
+            })
+            .then(data => {
+                result = data;
+                //处理请求得到的数据
+            })
+            .catch(ex => {
+                //网络请求失败,执行该回到函数,得到错误信息
+                result = { result: false, message: ex.message };
+            });
 
         return result;
     }
@@ -137,14 +104,11 @@ class HttpRequest {
                 //或 return response.text()
             })
             .then(data => {
-                console.log('http get');
-                console.log(data);
                 result = data;
                 // resolve(data);
                 //处理请求得到的数据
             })
             .catch(ex => {
-                console.log(ex)
                 //网络请求失败,执行该回到函数,得到错误信息
                 result = { result: false, message: ex.message };
                 //resolve(result);

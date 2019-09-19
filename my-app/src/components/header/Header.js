@@ -1,6 +1,6 @@
 import React from 'react';
 import './Header.css';
-import { Link } from 'react-router-dom';
+import {BrowserRouter as Router , Route , Link } from 'react-router-dom';
 import Auth from '../../service/Auth';
 
 class Header extends React.Component {
@@ -48,10 +48,14 @@ class Header extends React.Component {
             <div className='col p-0 header-box'>
               <div className='account-box'>
                 <div className='logout'>
+                  <Router>
                   <Link to='/signin'>Sign In</Link>
+                  </Router>
                 </div>
                 <div className='logout'>
+                  <Router>
                   <Link to='/signup'>Sign Up</Link>
+                  </Router>
                 </div>
               </div>
             </div>

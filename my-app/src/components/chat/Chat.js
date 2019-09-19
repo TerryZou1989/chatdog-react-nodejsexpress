@@ -1,6 +1,6 @@
 import React from 'react';
 import './Chat.css';
-import { Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Route,Redirect } from 'react-router-dom';
 import Auth from '../../service/Auth';
 import User from '../../service/User';
 import Header from '../header/Header';
@@ -12,7 +12,7 @@ class Chat extends React.Component {
   constructor(props) {
     super(props);
     const loginUserRes = Auth.getLoginUser();
-    this.state = { user: loginUserRes.data, isLogin: loginUserRes.result, searchName: '', selectFriend: null, friends: [], users: [],messages:[] };
+    this.state = { user: loginUserRes.data, isLogin: loginUserRes.result, searchName: '', selectFriend: null, friends: [], users: [], messages: [] };
     this.getFriendList();
     socket.emit('login', this.state.user);
   }
@@ -24,7 +24,7 @@ class Chat extends React.Component {
   componentDidMount() {
     socket.on('new_message', (data) => {
       var friend = this.state.selectFriend;
-      if (friend==null||(data && data.userId != friend._id)) {
+      if (friend == null || (data && data.userId != friend._id)) {
         var messages = this.state.messages;
         messages.push(data);
         this.setState({ messages: messages });
@@ -33,12 +33,12 @@ class Chat extends React.Component {
 
 
     socket.on('new_friend', (data) => {
-      var friends=this.state.friends;
-      var f=friends.find(t=>t._id==data.friendId);
-      if(f==null){
+      var friends = this.state.friends;
+      var f = friends.find(t => t._id == data.friendId);
+      if (f == null) {
         friends.push({
-          _id:data.friendId,
-          name:data.friendName
+          _id: data.friendId,
+          name: data.friendName
         });
         this.setState({ friends: friends });;
       }
@@ -77,9 +77,10 @@ class Chat extends React.Component {
   async doAddFriend(e) {
     var loginUser = this.state.user;
     var friendId = e.target.getAttribute('userId');
+    var friendName = e.target.getAttribute('userName');
     var res = await User.addFriend({ userId: loginUser._id, friendId: friendId });
     if (res.result) {
-      socket.emit('new_friend', {userId:loginUser._id,userName:loginUser.name,friendId:friendId});
+      socket.emit('new_friend', { userId: loginUser._id, userName: loginUser.name, friendId: friendId, friendName: friendName });
       await this.getFriendList();
     }
   }
@@ -92,13 +93,13 @@ class Chat extends React.Component {
     var friendId = e.target.getAttribute('friendId');
     var friends = this.state.friends;
     var friend = friends.find(t => t._id == friendId);
-    var messages=this.state.messages;
-    var fmessages=messages.filter(t=>t.userId==friendId);
-    fmessages.forEach((m)=>{
-      messages.splice(messages.indexOf(m),1);
+    var messages = this.state.messages;
+    var fmessages = messages.filter(t => t.userId == friendId);
+    fmessages.forEach((m) => {
+      messages.splice(messages.indexOf(m), 1);
     });
 
-    this.setState({ selectFriend: friend,messages:messages });
+    this.setState({ selectFriend: friend, messages: messages });
   }
 
 
@@ -112,15 +113,15 @@ class Chat extends React.Component {
     const isLogin = this.state.isLogin;
     const loginUser = this.state.user;
     if (isLogin) {
-      const messages=this.state.messages;
+      const messages = this.state.messages;
       const friendList = this.state.friends;// this.getFriendList();
       const friendListHtml = friendList.map((friend) =>
         <li key={friend._id} friendId={friend._id} onClick={this.doSelectFriend.bind(this)}>
           {friend.name}
-          {messages.filter(t=>t.userId==friend._id).length>0?
-           <span className='msgcount'> {messages.filter(t=>t.userId==friend._id).length}</span>
-           :<span/>
-           }
+          {messages.filter(t => t.userId == friend._id).length > 0 ?
+            <span className='msgcount'> {messages.filter(t => t.userId == friend._id).length}</span>
+            : <span />
+          }
         </li>
       );
 
@@ -133,7 +134,7 @@ class Chat extends React.Component {
               <div className='col-8 p-0'>{searchUser.name}</div>
               {
                 (friendList.find(t => t._id == searchUser._id) == null && loginUser._id != searchUser._id) ?
-                  <div className='col-4 p-0'><button key={searchUser._id} userId={searchUser._id} className='btn btn-secondary btn-sm' onClick={this.doAddFriend.bind(this)}>Add</button></div>
+                  <div className='col-4 p-0'><button key={searchUser._id} userId={searchUser._id} userName={searchUser.name} className='btn btn-secondary btn-sm' onClick={this.doAddFriend.bind(this)}>Add</button></div>
                   :
                   <div className='col-4 p-0'></div>
               }
@@ -150,7 +151,9 @@ class Chat extends React.Component {
         <div className='container'>
           <div className='row'>
             <div className='col p-0'>
-              <Header />
+              <Router>
+                <Header />
+              </Router>
             </div>
           </div>
           <div className='row mt-5'>
@@ -193,7 +196,7 @@ class Chat extends React.Component {
       );
     }
     else {
-      return (<Redirect to='/'></Redirect>);
+      return (<Router><Redirect to='/'></Redirect></Router>);
     }
   }
 }

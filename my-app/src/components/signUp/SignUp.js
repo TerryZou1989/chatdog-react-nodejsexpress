@@ -9,7 +9,7 @@ class SignUp extends React.Component {
   constructor(props) {
     super(props);
     Auth.logout();//不管等没登录，都登出
-    this.state = { email: "", password: "",name:'',isSignUp:false};
+    this.state = { email: "", password: "", name: '', isSignUp: false };
     this.doSignUp = this.doSignUp.bind(this);
     this.doChangeName = this.doChangeName.bind(this);
     this.doChangeEmail = this.doChangeEmail.bind(this);
@@ -22,17 +22,17 @@ class SignUp extends React.Component {
   async doSignUp(e) {
     //方式submit post返回
     e.preventDefault();
-    var res =await User.add({name:this.state.name,email:this.state.email,password:this.state.password});
+    var res = await User.add({ name: this.state.name, email: this.state.email, password: this.state.password });
     if (res.result) {
-      this.setState({isSignUp:true});
+      this.setState({ isSignUp: true });
       alert(res.message);
     }
     else {
-      alert("create acccount failed:"+res.message);
+      alert("create acccount failed:" + res.message);
     }
   }
 
-  
+
   doChangeName(e) {
     this.setState({ name: e.target.value });
   }
@@ -51,14 +51,16 @@ class SignUp extends React.Component {
         <div className='container'>
           <div className='row'>
             <div className='col p-0'>
-              <Header />
+              <Router>
+                <Header />
+              </Router>
             </div>
           </div>
           <div className='row'>
             <div className='col p-0'>
               <div className='login-box'>
                 <form onSubmit={this.doSignUp}>
-                <div className="form-group">
+                  <div className="form-group">
                     <label>Name</label>
                     <input type="text" className="form-control" id="txtName" placeholder="Enter name" value={this.state.name} onChange={this.doChangeName} />
                   </div>
